@@ -87,7 +87,7 @@ function App() {
 
   return (
     <div className="max-w-5xl m-auto">
-      <h2 className="text-2xl my-6">文字自動生成くん</h2>
+      <h2 className="text-2xl my-6">文章推論くん</h2>
       {data ? (
         <div>
           <h2 className="text-xl my-2">データ一覧</h2>
