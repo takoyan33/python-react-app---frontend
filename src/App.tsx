@@ -1,6 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useQuery, useMutation } from "react-query";
+import { Input } from "@chakra-ui/react";
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/react";
+import { Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+} from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
+import {
+  List,
+  ListItem,
+  ListIcon,
+  OrderedList,
+  UnorderedList,
+} from "@chakra-ui/react";
+import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 
 export type Data = {
   Hello: string;
@@ -13,6 +37,7 @@ export type Message = {
 };
 
 function App() {
+  const toast = useToast();
   // const [data, setData] = React.useState<Data>();
   const [message, setMessage] = React.useState();
   const [lengths, setLengths] = React.useState();
@@ -48,6 +73,9 @@ function App() {
     if (loading) return;
     setLoading(true);
     // 処理中フラグを上げる
+    console.log(message);
+    console.log(lengths);
+    console.log(number);
     axios
       .post(url + "/msg", {
         message: message,
@@ -55,14 +83,14 @@ function App() {
         num_return_sequences: number,
       })
       .then((res) => {
-        alert("結果が出たよ！");
+        toast({ description: "結果が出たよ！" });
         setTexts(res.data.message);
         console.log(res.data.message);
         setLoading(false);
         // console.log(texts?.message);
       })
       .catch(function (error) {
-        alert("失敗しました");
+        toast({ description: "失敗しました！" });
         console.log(error);
       });
   };
@@ -87,66 +115,66 @@ function App() {
 
   return (
     <div className="max-w-5xl m-auto">
-      <h2 className="text-2xl my-6">文章推論くん</h2>
-      {data ? (
+      <h2 className="text-2xl my-6 text-center">文章推論くん</h2>
+      {/* {data ? (
         <div>
           <h2 className="text-xl my-2">データ一覧</h2>
           <p>{data.message}</p>
         </div>
       ) : (
         <></>
-      )}
-      <br></br>
-      <p>
+      )} */}
+
+      <p className="my-4">
         文字自動生成くんは、APIでモデルの推論機能を使って、AIが文章を生成してくれます
       </p>
-      <p className="">文字を入れてみてね</p>
-      <br></br>
-      <label className="block mb-2 text-sm font-medium text-gray-900 ">
-        文章
-      </label>
-      <input
-        type="text"
-        onChange={handleChangemessage}
-        className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-      />
-      <br></br>
-      <label className="block mb-2 text-sm font-medium text-gray-900 ">
-        生成される文章の長さ
-      </label>
-      <input
-        type="number"
-        onChange={handleChangelength}
-        className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-      />
-      <br></br>
-      <label className="block mb-2 text-sm font-medium text-gray-900 ">
-        文章の数
-      </label>
-      <input
-        type="number"
-        onChange={handleChangenumber}
-        className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-      />
-      <br></br>
-      <input
-        onClick={generatedata}
-        type="submit"
-        value="送信する"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      />
-      <br></br>
-      {loading && <p className="my-6">出力中・・・</p>}
-      <br></br>
-      {texts && <p className="text-2xl my-6">出力結果</p>}
-      {texts &&
-        texts.map((text: any, index: any) => (
-          <>
-            <li className="todo-item my-6" key={index}>
-              <span className="todo-item__text">{text}</span>
-            </li>
-          </>
-        ))}
+      <p className="my-4">文字を入れてみてね</p>
+      <FormLabel>文章*</FormLabel>
+      <div className="my-4">
+        <Input placeholder="例：りんご" onChange={handleChangemessage} />
+      </div>
+
+      <FormLabel>生成される文章の長さ*</FormLabel>
+      <div className="my-4">
+        <NumberInput defaultValue={0} min={0}>
+          <NumberInputField onChange={handleChangelength} />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </div>
+      <FormLabel>文章の数*</FormLabel>
+      <div className="my-4">
+        <NumberInput defaultValue={0} min={0}>
+          <NumberInputField onChange={handleChangenumber} />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </div>
+      <div className="text-center m-auto my-6">
+        <Button onClick={generatedata} colorScheme="blue">
+          送信する
+        </Button>
+      </div>
+
+      {loading && (
+        <p className="my-6 text-center">
+          <CircularProgress isIndeterminate color="green.300" />
+          <span className="m-2">文章出力中・・・</span>
+        </p>
+      )}
+      {texts && <p className="text-2xl my-6 text-center">出力結果</p>}
+      <UnorderedList>
+        {texts &&
+          texts.map((text: any, index: any) => (
+            <>
+              <ListItem key={index}>{text}</ListItem>
+            </>
+          ))}
+      </UnorderedList>
     </div>
   );
 }
