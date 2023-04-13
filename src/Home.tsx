@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useQuery, useMutation } from "react-query";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Input, useDisclosure } from "@chakra-ui/react";
 import {
   NumberInput,
@@ -24,15 +24,6 @@ import {
   HiHashtag,
   HiPaperAirplane,
 } from "react-icons/hi";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
 
 export type Data = {
   Hello: string;
@@ -111,7 +102,6 @@ function Home() {
         navigate("/result", {
           state: { gptdata: res.data.message },
         });
-        // console.log(texts?.message);
       })
       .catch(function (error) {
         toast({
@@ -137,7 +127,11 @@ function Home() {
       <p className="my-4 text-center">
         ※生成される文章の長さが50文字以上になると時間がかかります。
       </p>
-
+      <p className="text-center">RinnaAPI</p>
+      <Link to="/chatgpt">
+        Home
+        <p className="text-center">chatgptを使う</p>
+      </Link>
       {loading && (
         <p className="my-6 text-center">
           <CircularProgress isIndeterminate color="green.300" />
